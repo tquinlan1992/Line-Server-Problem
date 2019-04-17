@@ -1,10 +1,12 @@
-import express from 'express';
-import { readFile, readFileIndexes } from './readFile';
-const app = express();
+import express, { Express } from 'express';
+import { ReadFileLines } from './ReadFileLines';
+import { Server } from 'http';
+export let app: Express | Server = express();
 const port = 3000;
-app.get('/', readFile);
-readFileIndexes().then(() => {
-  app.listen(port, err => {
+const readFile = new ReadFileLines('./src/textFiles/file.txt');
+app.get('/', readFile.endpoint.bind(readFile));
+readFile.readFileIndexesIntoMemory().then(() => {
+  app = (app as Express).listen(port, err => {
     if (err) {
       return console.error(err);
     }
